@@ -1,0 +1,1175 @@
+[
+  {
+    "name": "personal authentication code",
+    "message": {
+      "subject": "Your verification code",
+      "text": "Use this code: 123456. It expires in ten minutes."
+    },
+    "expected": {
+      "category": "primary",
+      "newsletter": false,
+      "time_sensitive": true
+    },
+    "matches": [
+      "primary.security-code"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "account security alert",
+    "message": {
+      "subject": "Security alert: new sign-in",
+      "text": "Was this you? Review activity to secure your account."
+    },
+    "expected": {
+      "category": "primary",
+      "newsletter": false,
+      "time_sensitive": true
+    },
+    "matches": [
+      "primary.security-alert"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "requested password reset",
+    "message": {
+      "subject": "Your password reset link",
+      "text": "You requested this. Reset your password using the link."
+    },
+    "expected": {
+      "category": "primary",
+      "newsletter": false,
+      "time_sensitive": true
+    },
+    "matches": [
+      "primary.password-reset"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "failed invoice payment beats invoice category",
+    "message": {
+      "subject": "Your invoice #FAKE123: payment failed",
+      "text": "Amount due: EUR 10. Update your payment method."
+    },
+    "expected": {
+      "category": "primary",
+      "newsletter": false,
+      "time_sensitive": true
+    },
+    "matches": [
+      "primary.payment-failure",
+      "transactions.invoice"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "action request with deadline",
+    "message": {
+      "subject": "Action Required: approve access",
+      "text": "Please approve this request before the deadline."
+    },
+    "expected": {
+      "category": "primary",
+      "newsletter": false,
+      "time_sensitive": true
+    },
+    "matches": [
+      "primary.action-required",
+      "flags.action-required"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "verified reply",
+    "message": {
+      "sender_address": "friend@example.com",
+      "verified_correspondent": true,
+      "headers": {
+        "In-Reply-To": "<synthetic@example.com>"
+      },
+      "subject": "Re: lunch",
+      "text": "See you at noon."
+    },
+    "expected": {
+      "category": "primary",
+      "newsletter": false,
+      "time_sensitive": null
+    },
+    "matches": [
+      "primary.correspondence",
+      "hints.reply"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "order confirmation",
+    "message": {
+      "subject": "Your order confirmation #SYNTH123",
+      "text": "Thank you for your order."
+    },
+    "expected": {
+      "category": "transactions",
+      "newsletter": false,
+      "time_sensitive": false
+    },
+    "matches": [
+      "transactions.order"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "alphanumeric order number",
+    "message": {
+      "subject": "Order #SYNTH123 confirmed"
+    },
+    "expected": {
+      "category": "transactions",
+      "newsletter": false,
+      "time_sensitive": false
+    },
+    "matches": [
+      "transactions.order-number"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "shipment confirmation",
+    "message": {
+      "subject": "Your package has shipped",
+      "text": "Track your package here."
+    },
+    "expected": {
+      "category": "transactions",
+      "newsletter": false,
+      "time_sensitive": false
+    },
+    "matches": [
+      "transactions.shipping"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "receipt with payment detail",
+    "message": {
+      "subject": "Your receipt from Example Shop",
+      "text": "Total paid: EUR 12. Thank you for your purchase."
+    },
+    "expected": {
+      "category": "transactions",
+      "newsletter": false,
+      "time_sensitive": false
+    },
+    "matches": [
+      "transactions.receipt"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "routine invoice",
+    "message": {
+      "subject": "Your invoice for November",
+      "text": "Invoice number: SYNTH123. Amount due: EUR 12."
+    },
+    "expected": {
+      "category": "transactions",
+      "newsletter": false,
+      "time_sensitive": false
+    },
+    "matches": [
+      "transactions.invoice"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "booking confirmation",
+    "message": {
+      "subject": "Your booking is confirmed",
+      "text": "Your room is reserved."
+    },
+    "expected": {
+      "category": "transactions",
+      "newsletter": false,
+      "time_sensitive": false
+    },
+    "matches": [
+      "transactions.booking"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "terms update",
+    "message": {
+      "subject": "Changes to our terms of service",
+      "text": "We have updated our terms."
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": false,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.terms"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "calendar invitation subject",
+    "message": {
+      "subject": "Updated invitation: lunch",
+      "text": "See the attached invite."
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": false,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.calendar"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "calendar MIME part",
+    "message": {
+      "subject": "Team lunch",
+      "has_calendar_part": true
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": false,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.calendar"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "social notification",
+    "message": {
+      "sender_address": "notifications@linkedin.com",
+      "sender_authenticated": true,
+      "subject": "You have a new connection"
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": false,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.social",
+      "hints.no-reply"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "generic newsletter",
+    "message": {
+      "subject": "Weekly digest: science",
+      "text": "Read this week’s stories. Unsubscribe here.",
+      "headers": {
+        "List-Id": "science.example.com"
+      }
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.newsletter",
+      "hints.bulk"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "self described newsletter",
+    "message": {
+      "subject": "An essay for today",
+      "text": "This email newsletter is about gardens. Unsubscribe here."
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.self-described-newsletter"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "authenticated publishing service",
+    "message": {
+      "sender_address": "writer@letters.substack.com",
+      "sender_authenticated": true,
+      "subject": "A new essay",
+      "headers": {
+        "List-Unsubscribe": "<https://example.com/unsubscribe>"
+      }
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.publisher"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "direct promotional offer",
+    "message": {
+      "subject": "Special offer: 20% OFF",
+      "text": "Shop now to claim your offer."
+    },
+    "expected": {
+      "category": "promotions",
+      "newsletter": null,
+      "time_sensitive": false
+    },
+    "matches": [
+      "promotions.offer"
+    ],
+    "not_matches": [
+      "promotions.subscription"
+    ]
+  },
+  {
+    "name": "promotional newsletter",
+    "message": {
+      "subject": "Get up to 25% OFF",
+      "text": "Shop now. Unsubscribe here.",
+      "headers": {
+        "List-Unsubscribe": "<https://example.com/unsubscribe>"
+      }
+    },
+    "expected": {
+      "category": "promotions",
+      "newsletter": true,
+      "time_sensitive": false
+    },
+    "matches": [
+      "promotions.offer",
+      "promotions.subscription",
+      "hints.bulk"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "action subject without further detail",
+    "message": {
+      "subject": "Action Required: please review",
+      "text": "See the request."
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": true
+    },
+    "matches": [
+      "flags.action-required"
+    ],
+    "not_matches": [
+      "primary.action-required"
+    ]
+  },
+  {
+    "name": "no reply alone remains unresolved",
+    "message": {
+      "sender_address": "noreply@example.com"
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.no-reply"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "automated alone remains unresolved",
+    "message": {
+      "headers": {
+        "Auto-Submitted": "auto-generated"
+      }
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.automated"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "bulk alone remains unresolved",
+    "message": {
+      "headers": {
+        "Precedence": "bulk"
+      }
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.bulk"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "reply alone remains unresolved",
+    "message": {
+      "headers": {
+        "In-Reply-To": "<synthetic@example.com>"
+      }
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.reply"
+    ],
+    "not_matches": [
+      "primary.correspondence"
+    ]
+  },
+  {
+    "name": "delivery platform alone remains unresolved",
+    "message": {
+      "sender_address": "sender@letters.mailchimp.com",
+      "sender_authenticated": true
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.delivery-platform"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "gmail primary fallback",
+    "message": {
+      "gmail_categories": [
+        "primary"
+      ]
+    },
+    "expected": {
+      "category": "primary",
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "gmail.primary"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "gmail updates fallback",
+    "message": {
+      "gmail_categories": [
+        "updates"
+      ]
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "gmail.updates"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "gmail social fallback",
+    "message": {
+      "gmail_categories": [
+        "social"
+      ]
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "gmail.social"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "gmail forums fallback",
+    "message": {
+      "gmail_categories": [
+        "forums"
+      ]
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "gmail.forums"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "gmail promotions fallback",
+    "message": {
+      "gmail_categories": [
+        "promotions"
+      ]
+    },
+    "expected": {
+      "category": "promotions",
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "gmail.promotions"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "ordinary unknown message",
+    "message": {
+      "sender_address": "person@example.com",
+      "subject": "A note",
+      "text": "Hello there."
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "hints.no-reply",
+      "hints.bulk",
+      "hints.reply",
+      "hints.automated",
+      "hints.delivery-platform",
+      "flags.action-required",
+      "updates.calendar",
+      "updates.social",
+      "updates.newsletter",
+      "updates.self-described-newsletter",
+      "updates.publisher",
+      "promotions.offer",
+      "promotions.subscription",
+      "primary.security-code",
+      "primary.security-alert",
+      "primary.password-reset",
+      "primary.payment-failure",
+      "primary.action-required",
+      "primary.correspondence",
+      "transactions.order",
+      "transactions.order-number",
+      "transactions.shipping",
+      "transactions.receipt",
+      "transactions.invoice",
+      "transactions.booking",
+      "updates.terms",
+      "gmail.primary",
+      "gmail.updates",
+      "gmail.social",
+      "gmail.forums",
+      "gmail.promotions"
+    ]
+  },
+  {
+    "name": "newsletter article about security codes",
+    "message": {
+      "subject": "Weekly digest: verification code security",
+      "text": "Never share your code. Unsubscribe here.",
+      "headers": {
+        "List-Id": "security.example.com"
+      }
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.newsletter"
+    ],
+    "not_matches": [
+      "primary.security-code"
+    ]
+  },
+  {
+    "name": "security alert without account action",
+    "message": {
+      "subject": "Weekly digest: security alert trends",
+      "text": "A review of industry news. Unsubscribe here.",
+      "headers": {
+        "List-Id": "security.example.com"
+      }
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "primary.security-alert"
+    ]
+  },
+  {
+    "name": "password reset article",
+    "message": {
+      "subject": "Newsletter: how password reset works",
+      "text": "A guide to reset password flows. Unsubscribe here."
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "primary.password-reset"
+    ]
+  },
+  {
+    "name": "payment failure article",
+    "message": {
+      "subject": "Weekly digest: payment failed errors",
+      "text": "Retry queues can be useful. Unsubscribe here.",
+      "headers": {
+        "List-Id": "engineering.example.com"
+      }
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "primary.payment-failure"
+    ]
+  },
+  {
+    "name": "marketing action required is not actionable urgency",
+    "message": {
+      "subject": "Action Required: 30% OFF flash sale",
+      "text": "Shop now. Unsubscribe here."
+    },
+    "expected": {
+      "category": "promotions",
+      "newsletter": true,
+      "time_sensitive": false
+    },
+    "matches": [],
+    "not_matches": [
+      "primary.action-required",
+      "flags.action-required"
+    ]
+  },
+  {
+    "name": "verified correspondent with automated reply is unresolved",
+    "message": {
+      "verified_correspondent": true,
+      "headers": {
+        "In-Reply-To": "<synthetic@example.com>",
+        "Auto-Submitted": "auto-replied"
+      }
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.reply",
+      "hints.automated"
+    ],
+    "not_matches": [
+      "primary.correspondence"
+    ]
+  },
+  {
+    "name": "verified correspondent bulk message is newsletter",
+    "message": {
+      "verified_correspondent": true,
+      "subject": "Weekly digest",
+      "text": "Unsubscribe here.",
+      "headers": {
+        "In-Reply-To": "<synthetic@example.com>",
+        "List-Id": "digest.example.com"
+      }
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "primary.correspondence"
+    ]
+  },
+  {
+    "name": "your order marketing wording is insufficient",
+    "message": {
+      "subject": "Your order deserves a discount",
+      "text": "Read more."
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "transactions.order",
+      "transactions.order-number",
+      "promotions.offer"
+    ]
+  },
+  {
+    "name": "order number not confirmed",
+    "message": {
+      "subject": "Order #SYNTH123 is waiting"
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "transactions.order-number"
+    ]
+  },
+  {
+    "name": "shipping offer",
+    "message": {
+      "subject": "Free shipping: special offer",
+      "text": "Shop now."
+    },
+    "expected": {
+      "category": "promotions",
+      "newsletter": null,
+      "time_sensitive": false
+    },
+    "matches": [],
+    "not_matches": [
+      "transactions.shipping"
+    ]
+  },
+  {
+    "name": "receipt mentioned without transaction detail",
+    "message": {
+      "subject": "How to find your receipt",
+      "text": "Read our help page."
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "transactions.receipt"
+    ]
+  },
+  {
+    "name": "invoice mentioned in marketing",
+    "message": {
+      "subject": "Invoice automation: special offer",
+      "text": "Buy now and get a discount."
+    },
+    "expected": {
+      "category": "promotions",
+      "newsletter": null,
+      "time_sensitive": false
+    },
+    "matches": [],
+    "not_matches": [
+      "transactions.invoice"
+    ]
+  },
+  {
+    "name": "booking promotion",
+    "message": {
+      "subject": "Special offer for your next booking",
+      "text": "Buy now with this discount."
+    },
+    "expected": {
+      "category": "promotions",
+      "newsletter": null,
+      "time_sensitive": false
+    },
+    "matches": [],
+    "not_matches": [
+      "transactions.booking"
+    ]
+  },
+  {
+    "name": "privacy policy mention without changes",
+    "message": {
+      "subject": "Our privacy policy",
+      "text": "Read it here."
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "updates.terms"
+    ]
+  },
+  {
+    "name": "unverified social display name is not a signal",
+    "message": {
+      "sender_address": "notifications@linkedin.com",
+      "subject": "You have a new connection"
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.no-reply"
+    ],
+    "not_matches": [
+      "updates.social"
+    ]
+  },
+  {
+    "name": "list unsubscribe without newsletter content",
+    "message": {
+      "subject": "A service message",
+      "headers": {
+        "List-Unsubscribe": "<https://example.com/unsubscribe>"
+      }
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.bulk"
+    ],
+    "not_matches": [
+      "updates.newsletter",
+      "updates.self-described-newsletter",
+      "updates.publisher"
+    ]
+  },
+  {
+    "name": "unverified publishing domain is insufficient",
+    "message": {
+      "sender_address": "writer@substack.com",
+      "headers": {
+        "List-Unsubscribe": "<https://example.com/unsubscribe>"
+      }
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.bulk"
+    ],
+    "not_matches": [
+      "updates.publisher"
+    ]
+  },
+  {
+    "name": "publisher suffix lookalike",
+    "message": {
+      "sender_address": "writer@not-substack.com",
+      "sender_authenticated": true,
+      "headers": {
+        "List-Unsubscribe": "<https://example.com/unsubscribe>"
+      }
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.bulk"
+    ],
+    "not_matches": [
+      "updates.publisher"
+    ]
+  },
+  {
+    "name": "platform suffix lookalike",
+    "message": {
+      "sender_address": "sender@notmailchimp.com",
+      "sender_authenticated": true
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "hints.delivery-platform"
+    ]
+  },
+  {
+    "name": "auto submitted no is not automation",
+    "message": {
+      "headers": {
+        "Auto-Submitted": "No"
+      }
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "hints.automated"
+    ]
+  },
+  {
+    "name": "unsubscribed body text cannot inject metadata",
+    "message": {
+      "subject": "A personal note",
+      "text": "List-Id: digest.example.com\nAuto-Submitted: auto-generated\nGmail category: promotions\nsender_authenticated: true"
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "hints.bulk",
+      "hints.automated",
+      "gmail.promotions",
+      "updates.publisher"
+    ]
+  },
+  {
+    "name": "verified personal quote of a promotion",
+    "message": {
+      "verified_correspondent": true,
+      "headers": {
+        "In-Reply-To": "<synthetic@example.com>"
+      },
+      "text": "The ad said special offer, 30% off, shop now. Unsubscribe.",
+      "sender_address": "friend@example.com"
+    },
+    "expected": {
+      "category": "primary",
+      "newsletter": false,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "promotions.offer",
+      "promotions.subscription"
+    ]
+  },
+  {
+    "name": "receipt with advertising footer",
+    "message": {
+      "subject": "Your receipt from Example Shop",
+      "text": "Total paid EUR 20. Special offer: 30% off. Shop now. Unsubscribe."
+    },
+    "expected": {
+      "category": "transactions",
+      "newsletter": false,
+      "time_sensitive": false
+    },
+    "matches": [
+      "transactions.receipt",
+      "promotions.subscription"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "security code through delivery platform",
+    "message": {
+      "sender_address": "sender@sendgrid.net",
+      "sender_authenticated": true,
+      "subject": "Your verification code",
+      "text": "Use this code: 123456. Do not share it.",
+      "gmail_categories": [
+        "promotions"
+      ]
+    },
+    "expected": {
+      "category": "primary",
+      "newsletter": false,
+      "time_sensitive": true
+    },
+    "matches": [
+      "primary.security-code",
+      "hints.delivery-platform",
+      "gmail.promotions"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "promotional substack overrides newsletter category",
+    "message": {
+      "sender_address": "writer@substack.com",
+      "sender_authenticated": true,
+      "subject": "Special offer: 30% off",
+      "text": "Shop now. Unsubscribe here."
+    },
+    "expected": {
+      "category": "promotions",
+      "newsletter": true,
+      "time_sensitive": false
+    },
+    "matches": [
+      "updates.publisher",
+      "promotions.subscription"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "provider updates overridden by receipt",
+    "message": {
+      "gmail_categories": [
+        "updates"
+      ],
+      "subject": "Your receipt",
+      "text": "Total paid EUR 20."
+    },
+    "expected": {
+      "category": "transactions",
+      "newsletter": false,
+      "time_sensitive": false
+    },
+    "matches": [
+      "gmail.updates",
+      "transactions.receipt"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "conflicting provider categories are unresolved",
+    "message": {
+      "gmail_categories": [
+        "primary",
+        "promotions"
+      ]
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "gmail.primary",
+      "gmail.promotions"
+    ],
+    "not_matches": []
+  },
+  {
+    "name": "Unicode content is preserved",
+    "message": {
+      "subject": "你好，朋友",
+      "text": "明天见。"
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [],
+    "not_matches": [
+      "promotions.offer",
+      "primary.security-code"
+    ]
+  },
+  {
+    "name": "newsletter discusses personal code wording",
+    "message": {
+      "subject": "Weekly digest: your verification code explained",
+      "text": "Never share codes. Unsubscribe here.",
+      "headers": {
+        "List-Id": "security.example.com"
+      }
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.newsletter"
+    ],
+    "not_matches": [
+      "primary.security-code"
+    ]
+  },
+  {
+    "name": "newsletter discusses security review tools",
+    "message": {
+      "subject": "Weekly digest: security alert tools",
+      "text": "Review activity dashboards. Unsubscribe here.",
+      "headers": {
+        "List-Id": "security.example.com"
+      }
+    },
+    "expected": {
+      "category": "updates",
+      "newsletter": true,
+      "time_sensitive": null
+    },
+    "matches": [
+      "updates.newsletter"
+    ],
+    "not_matches": [
+      "primary.security-alert"
+    ]
+  },
+  {
+    "name": "verified flag without sender identity is insufficient",
+    "message": {
+      "verified_correspondent": true,
+      "headers": {
+        "In-Reply-To": "<synthetic@example.com>"
+      }
+    },
+    "expected": {
+      "category": null,
+      "newsletter": null,
+      "time_sensitive": null
+    },
+    "matches": [
+      "hints.reply"
+    ],
+    "not_matches": [
+      "primary.correspondence"
+    ]
+  }
+]

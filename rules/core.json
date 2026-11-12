@@ -1,0 +1,1460 @@
+{
+  "format_version": 1,
+  "version": "0.1.0",
+  "license": "MIT",
+  "license_text": "MIT License\n\nCopyright (c) 2026 DakiaMail contributors\nCopyright (c) 2026 Kiera Bridgeman (kbridgie01)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.\n",
+  "sources": {
+    "gmail-inbox-cleaner": {
+      "url": "https://github.com/kbridgie01/gmail-inbox-cleaner",
+      "revision": "37ef90b3851416551f2a92130608860ee7feade6",
+      "license": "MIT",
+      "files": [
+        "src/services/classifier/RetailAnalyzer.ts",
+        "src/services/classifier/NewsletterAnalyzer.ts",
+        "src/services/classifier/HeaderAnalyzer.ts",
+        "src/services/classifier/OrderReceipt.ts",
+        "src/services/classifier/VetoRules.ts",
+        "src/services/classifier/ProtectedSenders.ts",
+        "src/services/classifier/CustomSenderLabels.ts",
+        "src/services/classifier/SenderAnalyzer.ts"
+      ]
+    },
+    "dakia": {
+      "url": "https://github.com/DakiaMail/email-classification-rules",
+      "revision": "v0.1.0",
+      "license": "MIT",
+      "files": [
+        "rules/core.json",
+        "docs/format.md"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "id": "primary.security-code",
+      "description": "A personal authentication code, with code-use instructions.",
+      "mode": "decision",
+      "priority": 100,
+      "when": {
+        "all": [
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "^(?:your verification code|your authentication code|your login code|your security code|your one-time code|your one time password|your 2fa code)\\b"
+          },
+          {
+            "field": "text",
+            "op": "regex",
+            "value": "\\b(?:expires in|do not share|never share|use this code|your code is)\\b"
+          }
+        ]
+      },
+      "set": {
+        "category": "primary",
+        "newsletter": false,
+        "time_sensitive": true
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "primary.security-alert",
+      "description": "A security alert asking the recipient to review account activity.",
+      "mode": "decision",
+      "priority": 100,
+      "when": {
+        "all": [
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "^(?:security alert|sign-in attempt|sign in attempt|unrecognized login|suspicious activity|new sign-in|new sign in)\\b"
+          },
+          {
+            "field": "text",
+            "op": "regex",
+            "value": "\\b(?:was this you|if this was not you|if this wasn't you|secure your account|review activity)\\b"
+          }
+        ]
+      },
+      "set": {
+        "category": "primary",
+        "newsletter": false,
+        "time_sensitive": true
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "primary.password-reset",
+      "description": "A requested password reset, with reset instructions.",
+      "mode": "decision",
+      "priority": 100,
+      "when": {
+        "all": [
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "^(?:reset your password|your password reset|password reset request)\\b"
+          },
+          {
+            "field": "text",
+            "op": "regex",
+            "value": "\\b(?:reset your password|reset password|expires in|you requested)\\b"
+          }
+        ]
+      },
+      "set": {
+        "category": "primary",
+        "newsletter": false,
+        "time_sensitive": true
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "primary.payment-failure",
+      "description": "A failed payment that requires a retry or payment-method update.",
+      "mode": "decision",
+      "priority": 100,
+      "when": {
+        "all": [
+          {
+            "any": [
+              {
+                "field": "subject",
+                "op": "regex",
+                "value": "^(?:payment failed|payment declined|payment unsuccessful|could not process your payment|your payment was declined)\\b"
+              },
+              {
+                "all": [
+                  {
+                    "field": "subject",
+                    "op": "regex",
+                    "value": "^your invoice\\b"
+                  },
+                  {
+                    "field": "subject",
+                    "op": "regex",
+                    "value": "\\bpayment failed\\b"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "field": "text",
+            "op": "regex",
+            "value": "\\b(?:retry|try again|update your payment|update your card|payment method)\\b"
+          }
+        ]
+      },
+      "set": {
+        "category": "primary",
+        "newsletter": false,
+        "time_sensitive": true
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "primary.action-required",
+      "description": "An explicit action request with supporting instructions, excluding marketing and subscriptions.",
+      "mode": "decision",
+      "priority": 85,
+      "when": {
+        "all": [
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "^(?:action required|response required|approval required)\\b"
+          },
+          {
+            "field": "text",
+            "op": "regex",
+            "value": "\\b(?:please approve|please respond|complete verification|submit your response|deadline|expires on)\\b"
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "field": "subject",
+                  "op": "regex",
+                  "value": "\\b(?:[0-9]{1,3}%[ \\t]{0,3}off|discount|coupon|flash sale|on sale|special offer|exclusive offer|promo code|promotion code|clearance)\\b"
+                },
+                {
+                  "field": "text",
+                  "op": "regex",
+                  "value": "\\b(?:[0-9]{1,3}%[ \\t]{0,3}off|discount|coupon|flash sale|on sale|special offer|exclusive offer|promo code|promotion code|clearance)\\b"
+                }
+              ]
+            }
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "field": "headers.list-id",
+                  "op": "present"
+                },
+                {
+                  "field": "headers.list-unsubscribe",
+                  "op": "present"
+                },
+                {
+                  "field": "headers.list-unsubscribe-post",
+                  "op": "present"
+                },
+                {
+                  "field": "headers.precedence",
+                  "op": "regex",
+                  "value": "^(?:bulk|list)$"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "set": {
+        "category": "primary",
+        "newsletter": false,
+        "time_sensitive": true
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "primary.correspondence",
+      "description": "A verified correspondent in a reply thread without bulk or automation signals.",
+      "mode": "decision",
+      "priority": 90,
+      "when": {
+        "all": [
+          {
+            "field": "sender_address",
+            "op": "present"
+          },
+          {
+            "field": "verified_correspondent",
+            "op": "equals",
+            "value": true
+          },
+          {
+            "any": [
+              {
+                "field": "headers.in-reply-to",
+                "op": "present"
+              },
+              {
+                "field": "headers.references",
+                "op": "present"
+              }
+            ]
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "field": "headers.list-id",
+                  "op": "present"
+                },
+                {
+                  "field": "headers.list-unsubscribe",
+                  "op": "present"
+                },
+                {
+                  "field": "headers.list-unsubscribe-post",
+                  "op": "present"
+                },
+                {
+                  "field": "headers.precedence",
+                  "op": "regex",
+                  "value": "^(?:bulk|list)$"
+                }
+              ]
+            }
+          },
+          {
+            "not": {
+              "all": [
+                {
+                  "field": "headers.auto-submitted",
+                  "op": "present"
+                },
+                {
+                  "not": {
+                    "field": "headers.auto-submitted",
+                    "op": "regex",
+                    "value": "^no$"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "set": {
+        "category": "primary",
+        "newsletter": false
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "transactions.order",
+      "description": "An order confirmation with explicit confirmation wording.",
+      "mode": "decision",
+      "priority": 80,
+      "when": {
+        "field": "subject",
+        "op": "regex",
+        "value": "\\b(?:order confirmation|your order is confirmed|your order has been confirmed|thank you for your order|we've received your order|we’ve received your order)\\b"
+      },
+      "set": {
+        "category": "transactions",
+        "newsletter": false,
+        "time_sensitive": false
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "transactions.order-number",
+      "description": "An order identifier followed by confirmed.",
+      "mode": "decision",
+      "priority": 80,
+      "when": {
+        "field": "subject",
+        "op": "regex",
+        "value": "\\border[ \\t]{1,3}#?[a-z0-9-]{3,32}[ \\t]{1,3}confirmed\\b"
+      },
+      "set": {
+        "category": "transactions",
+        "newsletter": false,
+        "time_sensitive": false
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "transactions.shipping",
+      "description": "A routine shipment or delivery confirmation.",
+      "mode": "decision",
+      "priority": 80,
+      "when": {
+        "field": "subject",
+        "op": "regex",
+        "value": "\\b(?:shipping confirmation|shipment confirmation|your order has shipped|your package has shipped|delivery confirmation|your package is out for delivery)\\b"
+      },
+      "set": {
+        "category": "transactions",
+        "newsletter": false,
+        "time_sensitive": false
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "transactions.receipt",
+      "description": "A receipt or completed payment with supporting transaction details.",
+      "mode": "decision",
+      "priority": 80,
+      "when": {
+        "all": [
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "\\b(?:your receipt|receipt for|payment received|payment confirmation)\\b"
+          },
+          {
+            "field": "text",
+            "op": "regex",
+            "value": "\\b(?:amount paid|total paid|thank you for your purchase|payment received|transaction id)\\b"
+          }
+        ]
+      },
+      "set": {
+        "category": "transactions",
+        "newsletter": false,
+        "time_sensitive": false
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "transactions.invoice",
+      "description": "An invoice, statement or tax document with an amount or document detail.",
+      "mode": "decision",
+      "priority": 80,
+      "when": {
+        "all": [
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "\\b(?:your invoice|invoice #[a-z0-9-]{1,32}|your statement|your tax document)\\b"
+          },
+          {
+            "field": "text",
+            "op": "regex",
+            "value": "\\b(?:amount due|invoice number|statement period|tax year|total paid)\\b"
+          }
+        ]
+      },
+      "set": {
+        "category": "transactions",
+        "newsletter": false,
+        "time_sensitive": false
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "transactions.booking",
+      "description": "A completed booking or reservation.",
+      "mode": "decision",
+      "priority": 80,
+      "when": {
+        "field": "subject",
+        "op": "regex",
+        "value": "\\b(?:your booking is confirmed|your reservation is confirmed|your booking confirmation|your reservation confirmation)\\b"
+      },
+      "set": {
+        "category": "transactions",
+        "newsletter": false,
+        "time_sensitive": false
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "updates.terms",
+      "description": "A notice of changes to terms or privacy policy.",
+      "mode": "decision",
+      "priority": 75,
+      "when": {
+        "all": [
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "\\b(?:terms of service|terms and conditions|privacy policy)\\b"
+          },
+          {
+            "any": [
+              {
+                "field": "subject",
+                "op": "regex",
+                "value": "\\b(?:updated|updates|changes|changing|new)\\b"
+              },
+              {
+                "field": "text",
+                "op": "regex",
+                "value": "\\b(?:updated|updates|changes|changing|new)\\b"
+              }
+            ]
+          }
+        ]
+      },
+      "set": {
+        "category": "updates",
+        "newsletter": false
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "updates.calendar",
+      "description": "A parsed calendar message or an explicit calendar invitation.",
+      "mode": "decision",
+      "priority": 75,
+      "when": {
+        "any": [
+          {
+            "field": "has_calendar_part",
+            "op": "equals",
+            "value": true
+          },
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "^(?:invitation:|updated invitation:|accepted:|declined:)"
+          },
+          {
+            "field": "text",
+            "op": "regex",
+            "value": "\\byou have been invited to the following event\\b"
+          }
+        ]
+      },
+      "set": {
+        "category": "updates",
+        "newsletter": false
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "updates.social",
+      "description": "An authenticated social-service sender with a routine notification subject.",
+      "mode": "decision",
+      "priority": 60,
+      "when": {
+        "all": [
+          {
+            "field": "sender_authenticated",
+            "op": "equals",
+            "value": true
+          },
+          {
+            "field": "sender_domain",
+            "op": "domain_in",
+            "value": [
+              "redditmail.com",
+              "reddit.com",
+              "facebookmail.com",
+              "instagram.com",
+              "linkedin.com",
+              "linkedinmail.com",
+              "twitter.com",
+              "x.com",
+              "pinterest.com",
+              "discord.com"
+            ]
+          },
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "\\b(?:new comment|new follower|new connection|mentioned you|liked your|invited you to connect)\\b"
+          }
+        ]
+      },
+      "set": {
+        "category": "updates",
+        "newsletter": false
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "updates.newsletter",
+      "description": "Newsletter or digest subject plus subscription evidence.",
+      "mode": "decision",
+      "priority": 55,
+      "when": {
+        "all": [
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "\\b(?:newsletter|weekly digest|daily digest|weekly roundup|daily roundup|issue #[0-9]{1,6})\\b"
+          },
+          {
+            "any": [
+              {
+                "any": [
+                  {
+                    "field": "headers.list-id",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.list-unsubscribe",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.list-unsubscribe-post",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.precedence",
+                    "op": "regex",
+                    "value": "^(?:bulk|list)$"
+                  }
+                ]
+              },
+              {
+                "field": "text",
+                "op": "regex",
+                "value": "\\bunsubscribe\\b"
+              }
+            ]
+          },
+          {
+            "not": {
+              "all": [
+                {
+                  "field": "sender_address",
+                  "op": "present"
+                },
+                {
+                  "field": "verified_correspondent",
+                  "op": "equals",
+                  "value": true
+                },
+                {
+                  "any": [
+                    {
+                      "field": "headers.in-reply-to",
+                      "op": "present"
+                    },
+                    {
+                      "field": "headers.references",
+                      "op": "present"
+                    }
+                  ]
+                },
+                {
+                  "not": {
+                    "any": [
+                      {
+                        "field": "headers.list-id",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe-post",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.precedence",
+                        "op": "regex",
+                        "value": "^(?:bulk|list)$"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "not": {
+                    "all": [
+                      {
+                        "field": "headers.auto-submitted",
+                        "op": "present"
+                      },
+                      {
+                        "not": {
+                          "field": "headers.auto-submitted",
+                          "op": "regex",
+                          "value": "^no$"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "set": {
+        "category": "updates",
+        "newsletter": true
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "updates.self-described-newsletter",
+      "description": "The message identifies itself as a newsletter and provides subscription evidence.",
+      "mode": "decision",
+      "priority": 55,
+      "when": {
+        "all": [
+          {
+            "field": "text",
+            "op": "regex",
+            "value": "\\bthis email newsletter\\b"
+          },
+          {
+            "any": [
+              {
+                "any": [
+                  {
+                    "field": "headers.list-id",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.list-unsubscribe",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.list-unsubscribe-post",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.precedence",
+                    "op": "regex",
+                    "value": "^(?:bulk|list)$"
+                  }
+                ]
+              },
+              {
+                "field": "text",
+                "op": "regex",
+                "value": "\\bunsubscribe\\b"
+              }
+            ]
+          },
+          {
+            "not": {
+              "all": [
+                {
+                  "field": "sender_address",
+                  "op": "present"
+                },
+                {
+                  "field": "verified_correspondent",
+                  "op": "equals",
+                  "value": true
+                },
+                {
+                  "any": [
+                    {
+                      "field": "headers.in-reply-to",
+                      "op": "present"
+                    },
+                    {
+                      "field": "headers.references",
+                      "op": "present"
+                    }
+                  ]
+                },
+                {
+                  "not": {
+                    "any": [
+                      {
+                        "field": "headers.list-id",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe-post",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.precedence",
+                        "op": "regex",
+                        "value": "^(?:bulk|list)$"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "not": {
+                    "all": [
+                      {
+                        "field": "headers.auto-submitted",
+                        "op": "present"
+                      },
+                      {
+                        "not": {
+                          "field": "headers.auto-submitted",
+                          "op": "regex",
+                          "value": "^no$"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "set": {
+        "category": "updates",
+        "newsletter": true
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "updates.publisher",
+      "description": "An authenticated publishing-service sender plus subscription evidence.",
+      "mode": "decision",
+      "priority": 55,
+      "when": {
+        "all": [
+          {
+            "field": "sender_authenticated",
+            "op": "equals",
+            "value": true
+          },
+          {
+            "field": "sender_domain",
+            "op": "domain_in",
+            "value": [
+              "substack.com",
+              "beehiiv.com",
+              "tldrnewsletter.com"
+            ]
+          },
+          {
+            "any": [
+              {
+                "any": [
+                  {
+                    "field": "headers.list-id",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.list-unsubscribe",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.list-unsubscribe-post",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.precedence",
+                    "op": "regex",
+                    "value": "^(?:bulk|list)$"
+                  }
+                ]
+              },
+              {
+                "field": "text",
+                "op": "regex",
+                "value": "\\bunsubscribe\\b"
+              }
+            ]
+          },
+          {
+            "not": {
+              "all": [
+                {
+                  "field": "sender_address",
+                  "op": "present"
+                },
+                {
+                  "field": "verified_correspondent",
+                  "op": "equals",
+                  "value": true
+                },
+                {
+                  "any": [
+                    {
+                      "field": "headers.in-reply-to",
+                      "op": "present"
+                    },
+                    {
+                      "field": "headers.references",
+                      "op": "present"
+                    }
+                  ]
+                },
+                {
+                  "not": {
+                    "any": [
+                      {
+                        "field": "headers.list-id",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe-post",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.precedence",
+                        "op": "regex",
+                        "value": "^(?:bulk|list)$"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "not": {
+                    "all": [
+                      {
+                        "field": "headers.auto-submitted",
+                        "op": "present"
+                      },
+                      {
+                        "not": {
+                          "field": "headers.auto-submitted",
+                          "op": "regex",
+                          "value": "^no$"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "set": {
+        "category": "updates",
+        "newsletter": true
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "promotions.offer",
+      "description": "Commerce wording and a shopping call to action, excluding verified correspondence.",
+      "mode": "decision",
+      "priority": 70,
+      "when": {
+        "all": [
+          {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "subject",
+                    "op": "regex",
+                    "value": "\\b(?:[0-9]{1,3}%[ \\t]{0,3}off|discount|coupon|flash sale|on sale|special offer|exclusive offer|promo code|promotion code|clearance)\\b"
+                  },
+                  {
+                    "field": "text",
+                    "op": "regex",
+                    "value": "\\b(?:[0-9]{1,3}%[ \\t]{0,3}off|discount|coupon|flash sale|on sale|special offer|exclusive offer|promo code|promotion code|clearance)\\b"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "field": "subject",
+                    "op": "regex",
+                    "value": "\\b(?:shop now|buy now|use code|claim your offer|redeem your offer)\\b"
+                  },
+                  {
+                    "field": "text",
+                    "op": "regex",
+                    "value": "\\b(?:shop now|buy now|use code|claim your offer|redeem your offer)\\b"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "not": {
+              "all": [
+                {
+                  "field": "sender_address",
+                  "op": "present"
+                },
+                {
+                  "field": "verified_correspondent",
+                  "op": "equals",
+                  "value": true
+                },
+                {
+                  "any": [
+                    {
+                      "field": "headers.in-reply-to",
+                      "op": "present"
+                    },
+                    {
+                      "field": "headers.references",
+                      "op": "present"
+                    }
+                  ]
+                },
+                {
+                  "not": {
+                    "any": [
+                      {
+                        "field": "headers.list-id",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe-post",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.precedence",
+                        "op": "regex",
+                        "value": "^(?:bulk|list)$"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "not": {
+                    "all": [
+                      {
+                        "field": "headers.auto-submitted",
+                        "op": "present"
+                      },
+                      {
+                        "not": {
+                          "field": "headers.auto-submitted",
+                          "op": "regex",
+                          "value": "^no$"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "set": {
+        "category": "promotions",
+        "time_sensitive": false
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "promotions.subscription",
+      "description": "A promotional offer delivered as subscription mail.",
+      "mode": "decision",
+      "priority": 70,
+      "when": {
+        "all": [
+          {
+            "all": [
+              {
+                "any": [
+                  {
+                    "field": "subject",
+                    "op": "regex",
+                    "value": "\\b(?:[0-9]{1,3}%[ \\t]{0,3}off|discount|coupon|flash sale|on sale|special offer|exclusive offer|promo code|promotion code|clearance)\\b"
+                  },
+                  {
+                    "field": "text",
+                    "op": "regex",
+                    "value": "\\b(?:[0-9]{1,3}%[ \\t]{0,3}off|discount|coupon|flash sale|on sale|special offer|exclusive offer|promo code|promotion code|clearance)\\b"
+                  }
+                ]
+              },
+              {
+                "any": [
+                  {
+                    "field": "subject",
+                    "op": "regex",
+                    "value": "\\b(?:shop now|buy now|use code|claim your offer|redeem your offer)\\b"
+                  },
+                  {
+                    "field": "text",
+                    "op": "regex",
+                    "value": "\\b(?:shop now|buy now|use code|claim your offer|redeem your offer)\\b"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "any": [
+              {
+                "any": [
+                  {
+                    "field": "headers.list-id",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.list-unsubscribe",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.list-unsubscribe-post",
+                    "op": "present"
+                  },
+                  {
+                    "field": "headers.precedence",
+                    "op": "regex",
+                    "value": "^(?:bulk|list)$"
+                  }
+                ]
+              },
+              {
+                "field": "text",
+                "op": "regex",
+                "value": "\\bunsubscribe\\b"
+              }
+            ]
+          },
+          {
+            "not": {
+              "all": [
+                {
+                  "field": "sender_address",
+                  "op": "present"
+                },
+                {
+                  "field": "verified_correspondent",
+                  "op": "equals",
+                  "value": true
+                },
+                {
+                  "any": [
+                    {
+                      "field": "headers.in-reply-to",
+                      "op": "present"
+                    },
+                    {
+                      "field": "headers.references",
+                      "op": "present"
+                    }
+                  ]
+                },
+                {
+                  "not": {
+                    "any": [
+                      {
+                        "field": "headers.list-id",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.list-unsubscribe-post",
+                        "op": "present"
+                      },
+                      {
+                        "field": "headers.precedence",
+                        "op": "regex",
+                        "value": "^(?:bulk|list)$"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "not": {
+                    "all": [
+                      {
+                        "field": "headers.auto-submitted",
+                        "op": "present"
+                      },
+                      {
+                        "not": {
+                          "field": "headers.auto-submitted",
+                          "op": "regex",
+                          "value": "^no$"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "set": {
+        "category": "promotions",
+        "newsletter": true,
+        "time_sensitive": false
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "flags.action-required",
+      "description": "An explicit action-required subject flags urgency, without assigning a category alone.",
+      "mode": "decision",
+      "priority": 60,
+      "when": {
+        "all": [
+          {
+            "field": "subject",
+            "op": "regex",
+            "value": "^(?:action required|response required|approval required)\\b"
+          },
+          {
+            "not": {
+              "any": [
+                {
+                  "field": "subject",
+                  "op": "regex",
+                  "value": "\\b(?:[0-9]{1,3}%[ \\t]{0,3}off|discount|coupon|flash sale|on sale|special offer|exclusive offer|promo code|promotion code|clearance)\\b"
+                },
+                {
+                  "field": "text",
+                  "op": "regex",
+                  "value": "\\b(?:[0-9]{1,3}%[ \\t]{0,3}off|discount|coupon|flash sale|on sale|special offer|exclusive offer|promo code|promotion code|clearance)\\b"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "set": {
+        "time_sensitive": true
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "hints.no-reply",
+      "description": "A no-reply local part is weak automation evidence, never a category by itself.",
+      "mode": "hint",
+      "priority": 0,
+      "when": {
+        "field": "sender_local",
+        "op": "regex",
+        "value": "^(?:noreply|no-reply|donotreply|do-not-reply|notifications)$"
+      },
+      "set": {
+        "category": "updates"
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "hints.automated",
+      "description": "Auto-Submitted other than no is weak automation evidence.",
+      "mode": "hint",
+      "priority": 0,
+      "when": {
+        "all": [
+          {
+            "field": "headers.auto-submitted",
+            "op": "present"
+          },
+          {
+            "not": {
+              "field": "headers.auto-submitted",
+              "op": "regex",
+              "value": "^no$"
+            }
+          }
+        ]
+      },
+      "set": {
+        "category": "updates"
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "hints.bulk",
+      "description": "List or bulk headers alone are weak subscription evidence.",
+      "mode": "hint",
+      "priority": 0,
+      "when": {
+        "any": [
+          {
+            "field": "headers.list-id",
+            "op": "present"
+          },
+          {
+            "field": "headers.list-unsubscribe",
+            "op": "present"
+          },
+          {
+            "field": "headers.list-unsubscribe-post",
+            "op": "present"
+          },
+          {
+            "field": "headers.precedence",
+            "op": "regex",
+            "value": "^(?:bulk|list)$"
+          }
+        ]
+      },
+      "set": {
+        "category": "updates"
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "hints.reply",
+      "description": "Reply headers alone are weak correspondence evidence.",
+      "mode": "hint",
+      "priority": 0,
+      "when": {
+        "any": [
+          {
+            "field": "headers.in-reply-to",
+            "op": "present"
+          },
+          {
+            "field": "headers.references",
+            "op": "present"
+          }
+        ]
+      },
+      "set": {
+        "category": "primary"
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "hints.delivery-platform",
+      "description": "An authenticated delivery-platform domain is weak evidence, not proof of a newsletter.",
+      "mode": "hint",
+      "priority": 0,
+      "when": {
+        "all": [
+          {
+            "field": "sender_authenticated",
+            "op": "equals",
+            "value": true
+          },
+          {
+            "field": "sender_domain",
+            "op": "domain_in",
+            "value": [
+              "mailchimp.com",
+              "sendgrid.net",
+              "klaviyo.com",
+              "constantcontact.com",
+              "campaign-archive.com",
+              "createsend.com",
+              "mailjet.com",
+              "sparkpostmail.com",
+              "emarsys.net",
+              "list-manage.com"
+            ]
+          }
+        ]
+      },
+      "set": {
+        "category": "updates"
+      },
+      "sources": [
+        "gmail-inbox-cleaner",
+        "dakia"
+      ]
+    },
+    {
+      "id": "gmail.primary",
+      "description": "Optional provider category as a low-priority fallback: primary.",
+      "mode": "decision",
+      "priority": 20,
+      "when": {
+        "field": "gmail_categories",
+        "op": "contains",
+        "value": "primary"
+      },
+      "set": {
+        "category": "primary"
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "gmail.updates",
+      "description": "Optional provider category as a low-priority fallback: updates.",
+      "mode": "decision",
+      "priority": 20,
+      "when": {
+        "field": "gmail_categories",
+        "op": "contains",
+        "value": "updates"
+      },
+      "set": {
+        "category": "updates"
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "gmail.social",
+      "description": "Optional provider category as a low-priority fallback: social.",
+      "mode": "decision",
+      "priority": 20,
+      "when": {
+        "field": "gmail_categories",
+        "op": "contains",
+        "value": "social"
+      },
+      "set": {
+        "category": "updates"
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "gmail.forums",
+      "description": "Optional provider category as a low-priority fallback: forums.",
+      "mode": "decision",
+      "priority": 20,
+      "when": {
+        "field": "gmail_categories",
+        "op": "contains",
+        "value": "forums"
+      },
+      "set": {
+        "category": "updates"
+      },
+      "sources": [
+        "dakia"
+      ]
+    },
+    {
+      "id": "gmail.promotions",
+      "description": "Optional provider category as a low-priority fallback: promotions.",
+      "mode": "decision",
+      "priority": 20,
+      "when": {
+        "field": "gmail_categories",
+        "op": "contains",
+        "value": "promotions"
+      },
+      "set": {
+        "category": "promotions"
+      },
+      "sources": [
+        "dakia"
+      ]
+    }
+  ]
+}
